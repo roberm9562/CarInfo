@@ -1,3 +1,6 @@
+import 'package:carvita/presentation/screens/monthly_log_screen.dart';
+import 'package:carvita/services/car_fund_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -291,6 +294,27 @@ class _DashboardScreenState extends State<DashboardScreen>
             statusBarIconBrightness: Brightness.light,
             statusBarBrightness: Brightness.dark,
           ),
+          actions: [
+            FutureBuilder<double>(
+              future: CarFundService.getBalance(),
+              builder: (context, snapshot) {
+                final balance = snapshot.data ?? 0.0;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Center(
+                    child: Text(
+                      '\$${balance.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<UpcomingMaintenanceCubit, UpcomingMaintenanceState>(
           builder: (context, upcomingState) {
@@ -434,6 +458,17 @@ class _DashboardScreenState extends State<DashboardScreen>
           },
         ),
         bottomNavigationBar: const MainBottomNavigationBar(currentIndex: 0),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => MonthlyLogScreen()),
+            );
+          },
+          icon: const Icon(Icons.calculate),
+          label: const Text('Monthly Log'),
+          backgroundColor: Colors.green,
+        ),
       ),
     );
   }
